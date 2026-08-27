@@ -1,0 +1,51 @@
+CREATE DATABASE IF NOT EXISTS TestiranjeSoftvera
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE TestiranjeSoftvera;
+
+-- 1. Tabela SesijaTestiranja
+CREATE TABLE SesijaTestiranja (
+    sesijaId INT AUTO_INCREMENT PRIMARY KEY,
+    nazivProjekta VARCHAR(100) NOT NULL,
+    verzija VARCHAR(20),
+    imeTestera VARCHAR(100) NOT NULL,
+    okruzenje VARCHAR(100),
+    komentar TEXT,
+    datumKreiranja DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- 2. Tabela Status (mora postojati pre SlucajTestiranja)
+CREATE TABLE Status (
+    statusId INT AUTO_INCREMENT PRIMARY KEY,
+    naziv VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- 3. Tabela SlucajTestiranja (sada su i SesijaTestiranja i Status kreirani)
+CREATE TABLE SlucajTestiranja (
+    slucajId INT AUTO_INCREMENT PRIMARY KEY,
+    sesijaId INT NOT NULL,
+    redniBroj INT NOT NULL,
+    opis TEXT NOT NULL,
+    ocekivaniRezultat TEXT,
+    stvarniRezultat TEXT,
+    statusId INT,
+    komentar TEXT,
+    FOREIGN KEY (sesijaId) REFERENCES SesijaTestiranja(sesijaId) ON DELETE CASCADE,
+    FOREIGN KEY (statusId) REFERENCES Status(statusId)
+) ENGINE=InnoDB;
+
+-- 4. Tabela Korisnik
+CREATE TABLE Korisnik (
+    korisnikId INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    lozinkaHash VARCHAR(255) NOT NULL,
+    ime VARCHAR(50),
+    prezime VARCHAR(50)
+) ENGINE=InnoDB;
+
+-- 5. Inicijalni unos u tabelu Status
+INSERT INTO Status (naziv) VALUES 
+    ('Prošao'), 
+    ('Pao'), 
+    ('Blokiran'), 
+    ('Nije testiran');

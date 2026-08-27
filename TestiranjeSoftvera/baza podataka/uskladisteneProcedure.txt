@@ -1,0 +1,114 @@
+DELIMITER //
+CREATE PROCEDURE spDodajSesiju(
+    IN p_nazivProjekta VARCHAR(100),
+    IN p_verzija VARCHAR(20),
+    IN p_imeTestera VARCHAR(100),
+    IN p_okruzenje VARCHAR(100),
+    IN p_komentar TEXT
+)
+BEGIN
+    INSERT INTO SesijaTestiranja (nazivProjekta, verzija, imeTestera, okruzenje, komentar)
+    VALUES (p_nazivProjekta, p_verzija, p_imeTestera, p_okruzenje, p_komentar);
+    SELECT LAST_INSERT_ID() AS noviId;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE spAzurirajSesiju(
+    IN p_sesijaId INT,
+    IN p_nazivProjekta VARCHAR(100),
+    IN p_verzija VARCHAR(20),
+    IN p_imeTestera VARCHAR(100),
+    IN p_okruzenje VARCHAR(100),
+    IN p_komentar TEXT
+)
+BEGIN
+    UPDATE SesijaTestiranja
+    SET nazivProjekta = p_nazivProjekta,
+        verzija = p_verzija,
+        imeTestera = p_imeTestera,
+        okruzenje = p_okruzenje,
+        komentar = p_komentar
+    WHERE sesijaId = p_sesijaId;
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE spObrisiSesiju(IN p_sesijaId INT)
+BEGIN
+    DELETE FROM SesijaTestiranja WHERE sesijaId = p_sesijaId;
+END //
+DELIMITER ;
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE spDodajSlucaj(
+    IN p_sesijaId INT,
+    IN p_redniBroj INT,
+    IN p_opis TEXT,
+    IN p_ocekivaniRezultat TEXT,
+    IN p_stvarniRezultat TEXT,
+    IN p_statusId INT,
+    IN p_komentar TEXT
+)
+BEGIN
+    INSERT INTO SlucajTestiranja (sesijaId, redniBroj, opis, ocekivaniRezultat, stvarniRezultat, statusId, komentar)
+    VALUES (p_sesijaId, p_redniBroj, p_opis, p_ocekivaniRezultat, p_stvarniRezultat, p_statusId, p_komentar);
+END //
+DELIMITER ;
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE spAzurirajSlucaj(
+    IN p_slucajId INT,
+    IN p_redniBroj INT,
+    IN p_opis TEXT,
+    IN p_ocekivaniRezultat TEXT,
+    IN p_stvarniRezultat TEXT,
+    IN p_statusId INT,
+    IN p_komentar TEXT
+)
+BEGIN
+    UPDATE SlucajTestiranja
+    SET redniBroj = p_redniBroj,
+        opis = p_opis,
+        ocekivaniRezultat = p_ocekivaniRezultat,
+        stvarniRezultat = p_stvarniRezultat,
+        statusId = p_statusId,
+        komentar = p_komentar
+    WHERE slucajId = p_slucajId;
+END //
+DELIMITER ;
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE spObrisiSlucaj(IN p_slucajId INT)
+BEGIN
+    DELETE FROM SlucajTestiranja WHERE slucajId = p_slucajId;
+END //
+DELIMITER ;
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE spDohvatiSlucajevePoSesiji(IN p_sesijaId INT)
+BEGIN
+    SELECT * FROM SlucajTestiranja WHERE sesijaId = p_sesijaId ORDER BY redniBroj;
+END //
+DELIMITER ;
+
+
+
+
+

@@ -1,0 +1,36 @@
+CREATE VIEW poglSesije AS
+SELECT 
+    s.sesijaId,
+    s.nazivProjekta,
+    s.verzija,
+    s.imeTestera,
+    s.okruzenje,
+    s.komentar AS komentarSesije,
+    s.datumKreiranja,
+    COUNT(sl.slucajId) AS brojSlucajeva
+FROM SesijaTestiranja s
+LEFT JOIN SlucajTestiranja sl ON s.sesijaId = sl.sesijaId
+GROUP BY s.sesijaId;
+
+
+CREATE VIEW poglSesijaDetalj AS
+SELECT 
+    s.sesijaId,
+    s.nazivProjekta,
+    s.verzija,
+    s.imeTestera,
+    s.okruzenje,
+    s.komentar AS komentarSesije,
+    s.datumKreiranja,
+    sl.slucajId,
+    sl.redniBroj,
+    sl.opis,
+    sl.ocekivaniRezultat,
+    sl.stvarniRezultat,
+    sl.komentar AS komentarSlucaja,
+    st.naziv AS statusNaziv,
+    st.statusId
+FROM SesijaTestiranja s
+LEFT JOIN SlucajTestiranja sl ON s.sesijaId = sl.sesijaId
+LEFT JOIN Status st ON sl.statusId = st.statusId
+ORDER BY s.sesijaId, sl.redniBroj;
